@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusQuest</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400&family=Raleway:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080c14;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --text: #e8e4dc;
+      --muted: rgba(232,228,220,0.4);
+      --accent: #a89060;
+      --accent-glow: rgba(168,144,96,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Raleway', sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Atmospheric background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(168,144,96,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% 100%, rgba(80,100,160,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(168,144,96,0.04) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 32px;
+      padding: 48px;
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    .screen.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Logo / Title */
+    .logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-title {
+      font-family: 'Cinzel', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      color: var(--text);
+    }
+
+    .logo-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 300;
+    }
+
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+      backdrop-filter: blur(12px);
+    }
+
+    .label {
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      color: var(--accent);
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    /* Timer */
+    .timer {
+      font-family: 'Cinzel', serif;
+      font-size: 4.5rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .session-time {
+      font-family: 'Cinzel', serif;
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+
+    /* Buttons */
+    .btn {
+      background: none;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 14px 48px;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 50px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      border-radius: 50px;
+    }
+
+    .btn:hover::before { opacity: 1; }
+    .btn:hover { color: var(--bg); box-shadow: 0 0 32px var(--accent-glow); }
+    .btn span { position: relative; z-index: 1; }
+
+    .btn-ghost {
+      border-color: var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost::before { background: rgba(255,255,255,0.05); }
+    .btn-ghost:hover { color: var(--text); box-shadow: none; }
+
+    /* Pulse dot */
+    .pulse-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #5a9;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .end-icon {
+      font-size: 2.5rem;
+      filter: grayscale(0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Startscreen -->
+  <div id="startScreen" class="screen active">
+    <div class="logo">
+      <div class="logo-title">FOCUSQUEST</div>
+      <div class="logo-sub">Deine Fokus-Welt wartet</div>
+    </div>
+    <div class="divider"></div>
+    <div class="card">
+      <div class="label">Bereit für deine Session?</div>
+      <button class="btn" onclick="startFocus()"><span>Focus starten</span></button>
+    </div>
+  </div>
+
+  <!-- Focus Screen -->
+  <div id="focusScreen" class="screen">
+    <div class="logo">
+      <div class="logo-title">FOCUSQUEST</div>
+    </div>
+    <div class="card">
+      <div class="pulse-wrap">
+        <div class="pulse"></div>
+        <div class="label">Session läuft</div>
+      </div>
+      <div class="timer" id="timer">00:00:00</div>
+      <button class="btn-ghost btn" onclick="endFocus()"><span>Session beenden</span></button>
+    </div>
+  </div>
+
+  <!-- End Screen -->
+  <div id="endScreen" class="screen">
+    <div class="end-icon">✦</div>
+    <div class="logo">
+      <div class="logo-title">Gut gemacht</div>
+      <div class="logo-sub">Session abgeschlossen</div>
+    </div>
+    <div class="divider"></div>
+    <div class="card">
+      <div class="label">Du hast fokussiert für</div>
+      <div class="session-time" id="sessionTime">00:00:00</div>
+      <button class="btn" onclick="restart()"><span>Neue Session</span></button>
+    </div>
+  </div>
+
+  <script>
+    let startTime;
+    let timerInterval;
+
+    function startFocus() {
+      startTime = Date.now();
+      showScreen('focusScreen');
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+      const elapsed = Date.now() - startTime;
+      document.getElementById('timer').textContent = formatTime(elapsed);
+    }
+
+    function endFocus() {
+      clearInterval(timerInterval);
+      const elapsed = Date.now() - startTime;
+      document.getElementById('sessionTime').textContent = formatTime(elapsed);
+      showScreen('endScreen');
+    }
+
+    function restart() {
+      showScreen('startScreen');
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function formatTime(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+      return [h, m, s].map(v => String(v).padStart(2, '0')).join(':');
+    }
+  </script>
+
+</body>
+</html>
