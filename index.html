@@ -10,16 +10,15 @@
     />
     <style>
       :root {
-        --chalk:      #f5f0e8;
-        --sand:       #e8d5b0;
-        --cream:      #f0ede8;
-        --gold:       #c8a96e;
-        --gold-soft:  rgba(200, 169, 110, 0.35);
-        --gold-glow:  rgba(200, 169, 110, 0.28);
-        --warm-ink:   #2c1f10;
-        --warm-muted: rgba(44, 31, 16, 0.52);
-        --glass-bg:   rgba(245, 240, 232, 0.26);
-        --glass-edge: rgba(200, 169, 110, 0.32);
+        --chalk:        #f5f0e8;
+        --sand:         #e8d5b0;
+        --stone:        #a89880;
+        --stone-border: rgba(180, 170, 155, 0.42);
+        --stone-dim:    rgba(168, 152, 128, 0.5);
+        --warm-ink:     #2c1f10;
+        --warm-muted:   rgba(44, 31, 16, 0.52);
+        --glass-bg:     rgba(245, 240, 232, 0.26);
+        --glass-edge:   rgba(180, 170, 155, 0.38);
       }
 
       * {
@@ -35,12 +34,21 @@
         background: url("Hintegrundbild.jpg") center / cover no-repeat fixed;
       }
 
-      /* ── SCREEN ── */
-      #startScreen {
+      /* ── SCENE SYSTEM ── */
+      .scene {
+        display: none;
         height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .scene.active                     { display: block; }
+      #startScreen.active,
+      #focusScreen.active,
+      #endScreen.active                 { display: flex; align-items: center; justify-content: center; }
+      #hubScreen.active                 { display: flex; flex-direction: column; }
+
+      /* ── START SCREEN ── */
+      #startScreen {
         animation: rise 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
 
@@ -81,16 +89,14 @@
         text-indent: 0.12em;
         color: var(--chalk);
         line-height: 1.3;
-        text-shadow:
-          0 2px 20px rgba(0, 0, 0, 0.26),
-          0 0 60px rgba(200, 169, 110, 0.18);
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.28);
       }
 
       .title-rule {
         width: 52px;
         height: 1px;
-        background: linear-gradient(90deg, transparent, var(--gold), transparent);
-        opacity: 0.8;
+        background: linear-gradient(90deg, transparent, var(--stone), transparent);
+        opacity: 0.7;
       }
 
       .subtitle {
@@ -98,7 +104,7 @@
         font-weight: 300;
         letter-spacing: 0.5em;
         text-indent: 0.5em;
-        color: var(--gold);
+        color: var(--stone);
         text-transform: uppercase;
         text-shadow: 0 1px 10px rgba(0, 0, 0, 0.14);
       }
@@ -113,9 +119,8 @@
         backdrop-filter: blur(26px);
         -webkit-backdrop-filter: blur(26px);
         box-shadow:
-          0 12px 48px rgba(180, 140, 80, 0.12),
-          inset 0 1px 0 rgba(245, 240, 232, 0.55),
-          inset 0 -1px 0 rgba(200, 169, 110, 0.1);
+          0 12px 48px rgba(160, 140, 110, 0.1),
+          inset 0 1px 0 rgba(245, 240, 232, 0.5);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -139,7 +144,7 @@
         width: 4px;
         height: 4px;
         border-radius: 50%;
-        background: var(--gold);
+        background: var(--stone);
         opacity: 0.65;
         flex-shrink: 0;
         text-indent: 0;
@@ -148,7 +153,7 @@
       /* ── BUTTON ── */
       .btn {
         background: rgba(245, 240, 232, 0.38);
-        border: 1px solid rgba(200, 169, 110, 0.42);
+        border: 1px solid var(--stone-border);
         color: var(--warm-ink);
         padding: 15px 56px;
         font-family: "Josefin Sans", sans-serif;
@@ -161,10 +166,7 @@
         border-radius: 50px;
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
-        transition:
-          border-color 0.35s ease,
-          box-shadow 0.35s ease,
-          background 0.35s ease;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
         position: relative;
         overflow: hidden;
       }
@@ -173,27 +175,20 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: rgba(245, 240, 232, 0.22);
+        background: rgba(245, 240, 232, 0.2);
         opacity: 0;
-        transition: opacity 0.35s ease;
+        transition: opacity 0.3s ease;
         border-radius: inherit;
       }
 
       .btn:hover {
-        border-color: var(--gold);
-        background: rgba(245, 240, 232, 0.48);
-        box-shadow:
-          0 0 28px rgba(200, 169, 110, 0.3),
-          0 0 70px rgba(200, 169, 110, 0.1);
+        border-color: var(--stone);
+        background: rgba(245, 240, 232, 0.5);
+        box-shadow: 0 4px 20px rgba(168, 152, 128, 0.18);
       }
 
-      .btn:hover::after {
-        opacity: 1;
-      }
-
-      .btn:active {
-        transform: scale(0.98);
-      }
+      .btn:hover::after { opacity: 1; }
+      .btn:active       { transform: scale(0.98); }
 
       /* ── FOOTER ── */
       .screen-footer {
@@ -215,21 +210,314 @@
         text-indent: 0;
       }
 
-      /* ── ANIMATION ── */
+      /* ── HUB SCREEN ── */
+      #hubScreen { background: #0d0a06; }
+
+      /* ── HUD BAR ── */
+      .hub-hud {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 32px;
+        background: rgba(18, 12, 5, 0.72);
+        border-bottom: 1px solid rgba(200, 169, 110, 0.16);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        z-index: 20;
+      }
+
+      .hud-stat {
+        font-size: 0.5rem;
+        font-weight: 300;
+        letter-spacing: 0.42em;
+        text-indent: 0.42em;
+        color: rgba(245, 240, 232, 0.55);
+        text-transform: uppercase;
+      }
+
+      .hud-stat strong { color: var(--stone); font-weight: 300; }
+
+      /* ── NAV PANEL ── */
+      .hub-nav {
+        height: 25vh;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        padding: 0 48px;
+        background: rgba(245, 240, 232, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+
+      .nav-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 28px;
+        min-width: 104px;
+        background: rgba(245, 240, 232, 0.38);
+        border: 1px solid rgba(180, 170, 155, 0.4);
+        border-radius: 14px;
+        cursor: pointer;
+        font-family: "Josefin Sans", sans-serif;
+        font-size: 0.46rem;
+        font-weight: 300;
+        letter-spacing: 0.36em;
+        text-indent: 0.36em;
+        text-transform: uppercase;
+        color: rgba(44, 31, 16, 0.55);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+      }
+
+      .nav-btn svg {
+        width: 20px;
+        height: 20px;
+        fill: rgba(140, 120, 95, 0.62);
+        flex-shrink: 0;
+        image-rendering: pixelated;
+        shape-rendering: crispEdges;
+        transition: fill 0.25s ease;
+      }
+
+      .nav-btn:hover {
+        background: rgba(245, 240, 232, 0.58);
+        border-color: var(--stone);
+        color: var(--warm-ink);
+      }
+
+      .nav-btn:hover svg { fill: var(--stone); }
+      .nav-btn:active    { transform: scale(0.97); }
+
+      /* ── SECTION DIVIDER ── */
+      .hub-section-divider {
+        height: 1px;
+        flex-shrink: 0;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(180, 170, 155, 0.48) 25%,
+          rgba(180, 170, 155, 0.48) 75%,
+          transparent 100%
+        );
+      }
+
+      /* ── WORLD SECTION (pixel-art + character) ── */
+      .hub-world-section {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Pixel-art world background — SWAP: set background-image here */
+      .hub-world {
+        position: absolute;
+        inset: 0;
+        /* SWAP: background: url('hub-background.png') center / cover no-repeat; */
+        background: #1c1409;
+        image-rendering: pixelated;
+      }
+
+      .hub-bg-placeholder {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.52rem;
+        font-weight: 300;
+        letter-spacing: 0.44em;
+        text-indent: 0.44em;
+        color: rgba(245, 240, 232, 0.18);
+        text-transform: uppercase;
+      }
+
+      /* Radial vignette */
+      .hub-vignette {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 80% 80% at 50% 60%,
+          transparent 35%,
+          rgba(4, 2, 1, 0.72) 100%
+        );
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      /* ── PLAYER CHARACTER ── */
+      .hub-player {
+        position: absolute;
+        bottom: 72px;
+        left: 0;
+        width: 80px;
+        height: 80px;
+        z-index: 15;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        font-size: 2.6rem;
+        line-height: 1;
+        filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.9));
+        image-rendering: pixelated;
+        will-change: transform;
+        /* SWAP: background: url('player-sprite.png') no-repeat center / contain;
+                 font-size: 0; */
+      }
+
+      /* ── HUB FOCUS BUTTON ── */
+      .hub-focus-wrap {
+        position: absolute;
+        bottom: 160px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        z-index: 25;
+      }
+
+      /* ── FOCUS SCREEN ── */
+      .focus-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 36px;
+      }
+
+      .focus-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .focus-pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #6dbf8a;
+        animation: pulseDot 2s ease infinite;
+        flex-shrink: 0;
+      }
+
+      .focus-status-label {
+        font-size: 0.52rem;
+        font-weight: 300;
+        letter-spacing: 0.44em;
+        text-indent: 0.44em;
+        color: rgba(245, 240, 232, 0.55);
+        text-transform: uppercase;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      .focus-timer {
+        font-family: "Press Start 2P", monospace;
+        font-size: 3.5rem;
+        color: var(--chalk);
+        line-height: 1;
+        text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
+        white-space: nowrap;
+      }
+
+      /* ── END SCREEN ── */
+      .end-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 44px;
+        max-width: 480px;
+        width: 100%;
+        padding: 0 28px;
+      }
+
+      .end-title-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .end-title {
+        font-size: 2rem;
+        font-weight: 200;
+        letter-spacing: 0.32em;
+        text-indent: 0.32em;
+        color: var(--chalk);
+        text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25);
+      }
+
+      .end-rule {
+        width: 48px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--stone), transparent);
+        opacity: 0.65;
+      }
+
+      .end-sub {
+        font-size: 0.5rem;
+        font-weight: 300;
+        letter-spacing: 0.46em;
+        text-indent: 0.46em;
+        color: var(--stone-dim);
+        text-transform: uppercase;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.14);
+      }
+
+      .end-card {
+        width: 100%;
+        background: rgba(245, 240, 232, 0.22);
+        border: 1px solid rgba(180, 170, 155, 0.35);
+        border-radius: 22px;
+        padding: 44px 52px;
+        backdrop-filter: blur(26px);
+        -webkit-backdrop-filter: blur(26px);
+        box-shadow:
+          0 12px 48px rgba(0, 0, 0, 0.18),
+          inset 0 1px 0 rgba(245, 240, 232, 0.45);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+      }
+
+      .end-time-label {
+        font-size: 0.5rem;
+        font-weight: 300;
+        letter-spacing: 0.42em;
+        text-indent: 0.42em;
+        color: rgba(245, 240, 232, 0.42);
+        text-transform: uppercase;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.14);
+      }
+
+      .end-time {
+        font-size: 4rem;
+        font-weight: 100;
+        letter-spacing: 0.04em;
+        color: var(--chalk);
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+        line-height: 1;
+      }
+
+      /* ── ANIMATIONS ── */
       @keyframes rise {
-        from {
-          opacity: 0;
-          transform: translateY(22px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(22px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes pulseDot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%      { opacity: 0.3; transform: scale(0.6); }
       }
     </style>
   </head>
   <body>
-    <div id="startScreen">
+    <div class="scene active" id="startScreen">
       <div class="wrap">
 
         <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
@@ -254,9 +542,210 @@
       </div>
     </div>
 
+    <!-- HUB SCREEN -->
+    <div class="scene" id="hubScreen">
+
+      <!-- HUD bar (flex child 1) -->
+      <div class="hub-hud">
+        <div class="hud-stat">Fokuszeit: <strong id="hudTime">0min</strong></div>
+        <div class="hud-stat">Hub Level <strong id="hudLevel">1</strong></div>
+      </div>
+
+      <!-- Navigation panel (flex child 2) -->
+      <div class="hub-nav">
+
+        <!-- Inventar: pixel-art bag -->
+        <button class="nav-btn">
+          <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="0" width="6" height="1"/><rect x="4" y="1" width="2" height="2"/><rect x="10" y="1" width="2" height="2"/><rect x="1" y="3" width="14" height="12"/>
+          </svg>
+          Inventar
+        </button>
+
+        <!-- Statistiken: pixel-art bar chart -->
+        <button class="nav-btn">
+          <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="15" width="16" height="1"/><rect x="1" y="10" width="3" height="5"/><rect x="6" y="5" width="3" height="10"/><rect x="11" y="2" width="3" height="13"/>
+          </svg>
+          Statistiken
+        </button>
+
+        <!-- Einstellungen: pixel-art gear -->
+        <button class="nav-btn">
+          <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="0" width="4" height="3"/><rect x="0" y="6" width="3" height="4"/><rect x="13" y="6" width="3" height="4"/><rect x="6" y="13" width="4" height="3"/><rect x="3" y="3" width="10" height="10"/>
+          </svg>
+          Einstellungen
+        </button>
+
+        <!-- Welten: pixel-art globe -->
+        <button class="nav-btn">
+          <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="0" width="6" height="2"/><rect x="3" y="2" width="10" height="2"/><rect x="2" y="4" width="12" height="8"/><rect x="3" y="12" width="10" height="2"/><rect x="5" y="14" width="6" height="2"/>
+          </svg>
+          Welten
+        </button>
+
+      </div>
+
+      <!-- Gold divider (flex child 3) -->
+      <div class="hub-section-divider"></div>
+
+      <!-- World section: pixel-art + character + timer (flex child 4) -->
+      <div class="hub-world-section">
+
+        <!-- World background — SWAP: add background-image to .hub-world in CSS -->
+        <div class="hub-world">
+          <div class="hub-bg-placeholder">Hub wird geladen …</div>
+        </div>
+
+        <!-- Edge vignette -->
+        <div class="hub-vignette"></div>
+
+        <!-- Focus button -->
+        <div class="hub-focus-wrap">
+          <button class="btn" onclick="goToFocusScreen()">Focus starten</button>
+        </div>
+
+        <!-- Player character — SWAP: replace emoji with sprite via CSS background-image -->
+        <div class="hub-player" id="hubPlayer">🧍</div>
+
+      </div>
+
+    </div>
+
+    <!-- FOCUS SCREEN -->
+    <div class="scene" id="focusScreen">
+      <div class="focus-wrap">
+
+        <div class="focus-status">
+          <div class="focus-pulse-dot"></div>
+          <div class="focus-status-label">Session läuft</div>
+        </div>
+
+        <div class="focus-timer" id="focusTimerDisplay">00:00:00</div>
+
+        <button class="btn" onclick="endFocusSession()">Session beenden</button>
+
+      </div>
+    </div>
+
+    <!-- END SCREEN -->
+    <div class="scene" id="endScreen">
+      <div class="end-wrap">
+
+        <div class="end-title-block">
+          <h2 class="end-title">Gut gemacht</h2>
+          <div class="end-rule"></div>
+          <p class="end-sub">Session abgeschlossen</p>
+        </div>
+
+        <div class="end-card">
+          <div class="end-time-label">Du hast fokussiert für</div>
+          <div class="end-time" id="endSessionTime">00:00:00</div>
+          <button class="btn" onclick="backToHub()">Zurück zum Hub</button>
+        </div>
+
+      </div>
+    </div>
+
     <script>
-      function startFocus() {
-        console.log("startFocus() — screen wird folgen");
+      /* ── SCENE ROUTING ── */
+      function showScene(id) {
+        document.querySelectorAll('.scene').forEach(el => el.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if (id === 'hubScreen') startHubLoop();
+        else stopHubLoop();
+      }
+
+      function startFocus()  { showScene('hubScreen'); }
+      function backToHub()   { showScene('hubScreen'); }
+
+      /* ── HUB CHARACTER MOVEMENT ── */
+      const HUB_SPEED  = 5;
+      let hubKeys      = {};
+      let hubPlayerX   = null;
+      let hubAnimFrame = null;
+
+      document.addEventListener('keydown', e => { hubKeys[e.key] = true; });
+      document.addEventListener('keyup',   e => { hubKeys[e.key] = false; });
+
+      function hubLoop() {
+        const player = document.getElementById('hubPlayer');
+        if (!player) return;
+        if (hubKeys['ArrowLeft']  || hubKeys['a'] || hubKeys['A']) hubPlayerX -= HUB_SPEED;
+        if (hubKeys['ArrowRight'] || hubKeys['d'] || hubKeys['D']) hubPlayerX += HUB_SPEED;
+        hubPlayerX = Math.max(0, Math.min(hubPlayerX, window.innerWidth - 80));
+        player.style.transform = `translateX(${hubPlayerX}px)`;
+        hubAnimFrame = requestAnimationFrame(hubLoop);
+      }
+
+      function startHubLoop() {
+        const player = document.getElementById('hubPlayer');
+        if (hubPlayerX === null && player) {
+          hubPlayerX = window.innerWidth / 2 - 40;
+          player.style.transform = `translateX(${hubPlayerX}px)`;
+        }
+        if (hubAnimFrame) cancelAnimationFrame(hubAnimFrame);
+        hubAnimFrame = requestAnimationFrame(hubLoop);
+      }
+
+      function stopHubLoop() {
+        if (hubAnimFrame) { cancelAnimationFrame(hubAnimFrame); hubAnimFrame = null; }
+      }
+
+      /* ── FOCUS TIMER ── */
+      let focusRunning   = false;
+      let focusStartMs   = 0;
+      let focusElapsedMs = 0;
+      let focusInterval  = null;
+
+      function goToFocusScreen() {
+        showScene('focusScreen');
+        focusRunning   = true;
+        focusStartMs   = Date.now();
+        focusElapsedMs = 0;
+        document.getElementById('focusTimerDisplay').textContent = '00:00:00';
+        document.getElementById('hudTime').textContent = '0min';
+        focusInterval = setInterval(tickFocus, 1000);
+      }
+
+      function tickFocus() {
+        focusElapsedMs = Date.now() - focusStartMs;
+        document.getElementById('focusTimerDisplay').textContent = formatClock(focusElapsedMs);
+        document.getElementById('hudTime').textContent = formatHudTime(focusElapsedMs);
+      }
+
+      function endFocusSession() {
+        if (!focusRunning) return;
+        focusRunning = false;
+        clearInterval(focusInterval);
+        focusInterval = null;
+        focusElapsedMs = Date.now() - focusStartMs;
+        document.getElementById('endSessionTime').textContent = formatClock(focusElapsedMs);
+        showScene('endScreen');
+      }
+
+      // Tab hidden → auto-end session
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && focusRunning) endFocusSession();
+      });
+
+      /* ── FORMATTERS ── */
+      function formatClock(ms) {
+        const s   = Math.floor(ms / 1000);
+        const h   = Math.floor(s / 3600);
+        const m   = Math.floor((s % 3600) / 60);
+        const sec = s % 60;
+        return [h, m, sec].map(v => String(v).padStart(2, '0')).join(':');
+      }
+
+      function formatHudTime(ms) {
+        const totalMin = Math.floor(ms / 60000);
+        if (totalMin < 60) return totalMin + 'min';
+        const h = Math.floor(totalMin / 60);
+        const m = totalMin % 60;
+        return m > 0 ? `${h}h ${m}m` : `${h}h`;
       }
     </script>
   </body>

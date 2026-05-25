@@ -43,3 +43,29 @@ Two fonts loaded from Google Fonts:
 - Glass panels: light, warm, airy — never dark. `backdrop-filter: blur(24-26px)` on all panels.
 - Buttons: pill shape (`border-radius: 50px`), light chalk glass background, gold border, warm gold `box-shadow` glow on hover.
 - No dark overlays, no navy, no cold colors anywhere.
+
+## Product concept
+
+Hub-System: the user has a central base (train, camper van, or house — not yet decided) that represents their progress. Focus time is the only currency — it builds the base and unlocks new worlds.
+
+Core loop: Start focus → collect time → earn resources → upgrade hub or unlock worlds → start again.
+
+## Worlds
+
+- Sunlit Dunes (first world, pixel-art background already exists as Gemini_Generated_Image_tr0sj5tr0sj5tr0s.png)
+- Planned: Fantasy, Solarpunk, Steampunk, Modern Minimalistic, Mountains, Floating Gardens, Rainglass House
+
+## Focus screen (to be rebuilt)
+
+- Three equal thirds: timer top, pixel-art world middle, buttons bottom
+- Middle third: pixel-art image scrolls seamlessly left in a loop (two copies side by side, translateX -50%)
+- Ground strip (Boden_1Welt.png) scrolls below the pixel-art at the same speed
+
+## Technical debt
+
+- Remove bg-world element from HTML (leftover, does nothing)
+- Introduce state system when loot, XP, inventory or multiple worlds are added
+
+## Workflow note
+
+Anton has no coding knowledge. Always explain what to do step by step. Write complete code blocks, never partial snippets without context.
