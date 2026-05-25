@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FocusQuest</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300;400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300;400&family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --glass: rgba(255, 255, 255, 0.08);
-        --glass-border: rgba(255, 255, 255, 0.15);
-        --glass-hover: rgba(255, 255, 255, 0.13);
-        --text: #f0ede8;
-        --text-dim: rgba(240, 237, 232, 0.5);
-        --accent: #c8a96e;
-        --accent-glow: rgba(200, 169, 110, 0.25);
-        --bg: #0a0c10;
+        --chalk:      #f5f0e8;
+        --sand:       #e8d5b0;
+        --cream:      #f0ede8;
+        --gold:       #c8a96e;
+        --gold-soft:  rgba(200, 169, 110, 0.35);
+        --gold-glow:  rgba(200, 169, 110, 0.28);
+        --warm-ink:   #2c1f10;
+        --warm-muted: rgba(44, 31, 16, 0.52);
+        --glass-bg:   rgba(245, 240, 232, 0.26);
+        --glass-edge: rgba(200, 169, 110, 0.32);
       }
 
       * {
@@ -30,417 +32,194 @@
         font-family: "Josefin Sans", sans-serif;
         height: 100vh;
         overflow: hidden;
-        background: url("Hintegrundbild.jpg") center/cover no-repeat fixed;
-        color: var(--text);
+        background: url("Hintegrundbild.jpg") center / cover no-repeat fixed;
       }
 
-      /* ─── BACKGROUND ─── */
-      .bg {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-      }
-
-      .bg-world {
-        position: absolute;
-        inset: 0;
-        overflow: hidden;
-        opacity: 0;
-        transition: opacity 1.2s ease;
-      }
-
-      .bg-world.visible {
-        opacity: 1;
-      }
-
-      .world-strip {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        display: flex;
-        animation: scrollWorld 140s linear infinite;
-      }
-
-      .world-strip img {
-        height: 100%;
-        width: auto;
-        image-rendering: pixelated;
-      }
-
-      @keyframes scrollWorld {
-        from {
-          transform: translateX(0);
-        }
-        to {
-          transform: translateX(-50%);
-        }
-      }
-
-      /* Dark gradient overlay over world */
-      .bg-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          to bottom,
-          rgba(10, 12, 16, 0.75) 0%,
-          rgba(10, 12, 16, 0.3) 33%,
-          rgba(10, 12, 16, 0.15) 66%,
-          rgba(10, 12, 16, 0.6) 100%
-        );
-      }
-
-      /* ─── SCREENS ─── */
-      .scene {
-        position: relative;
-        z-index: 10;
-        height: 100vh;
-        display: none;
-      }
-
-      .scene.active {
-        display: flex;
-      }
-
-      /* ─── START SCREEN ─── */
+      /* ── SCREEN ── */
       #startScreen {
-        flex-direction: column;
+        height: 100vh;
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 40px;
-        animation: fadeUp 1s ease forwards;
+        animation: rise 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
       }
 
-      .start-title {
+      /* ── LAYOUT COLUMN ── */
+      .wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 44px;
+        width: 100%;
+        max-width: 460px;
+        padding: 0 28px;
+      }
+
+      /* ── ORNAMENT ── */
+      .ornament {
+        font-size: 0.5rem;
+        letter-spacing: 1.4em;
+        text-indent: 1.4em;
+        color: var(--gold);
+        opacity: 0.6;
+      }
+
+      /* ── TITLE BLOCK ── */
+      .title-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
         text-align: center;
       }
 
-      .start-title h1 {
-        font-size: 3.5rem;
-        font-weight: 200;
+      .main-title {
+        font-family: "Press Start 2P", monospace;
+        font-size: 2.15rem;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        text-indent: 0.12em;
+        color: var(--chalk);
+        line-height: 1.3;
+        text-shadow:
+          0 2px 20px rgba(0, 0, 0, 0.26),
+          0 0 60px rgba(200, 169, 110, 0.18);
+      }
+
+      .title-rule {
+        width: 52px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        opacity: 0.8;
+      }
+
+      .subtitle {
+        font-size: 0.54rem;
+        font-weight: 300;
         letter-spacing: 0.5em;
-        color: var(--text);
-      }
-
-      .start-title p {
-        font-size: 0.65rem;
-        letter-spacing: 0.4em;
-        color: var(--accent);
+        text-indent: 0.5em;
+        color: var(--gold);
         text-transform: uppercase;
-        margin-top: 8px;
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.14);
       }
 
-      .start-card {
-        background: var(--glass);
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        padding: 48px 64px;
+      /* ── GLASS CARD ── */
+      .card {
+        width: 100%;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-edge);
+        border-radius: 22px;
+        padding: 44px 52px;
+        backdrop-filter: blur(26px);
+        -webkit-backdrop-filter: blur(26px);
+        box-shadow:
+          0 12px 48px rgba(180, 140, 80, 0.12),
+          inset 0 1px 0 rgba(245, 240, 232, 0.55),
+          inset 0 -1px 0 rgba(200, 169, 110, 0.1);
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 32px;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
       }
 
-      /* ─── FOCUS SCREEN ─── */
-      #focusScreen {
-        flex-direction: column;
-        animation: fadeUp 0.8s ease forwards;
-      }
-
-      /* TOP THIRD */
-      .focus-top {
-        height: 33.33vh;
-        display: grid;
-        grid-template-columns: 1fr 2fr 1fr;
-        gap: 16px;
-        padding: 20px 24px;
-        align-items: center;
-      }
-
-      .glass-panel {
-        background: var(--glass);
-        border: 1px solid var(--glass-border);
-        border-radius: 18px;
-        padding: 16px 20px;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        height: 100%;
+      .card-label {
         display: flex;
-        flex-direction: column;
+        align-items: center;
         gap: 10px;
-        justify-content: center;
-      }
-
-      .panel-label {
-        font-size: 0.55rem;
-        letter-spacing: 0.35em;
-        color: var(--accent);
+        font-size: 0.52rem;
+        font-weight: 300;
+        letter-spacing: 0.44em;
+        text-indent: 0.44em;
+        color: var(--warm-muted);
         text-transform: uppercase;
       }
 
-      .panel-btn {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: var(--text-dim);
-        padding: 8px 14px;
-        font-family: "Josefin Sans", sans-serif;
-        font-size: 0.6rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        cursor: pointer;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        text-align: left;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .panel-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: var(--accent);
-        color: var(--text);
-      }
-
-      .panel-btn svg {
-        opacity: 0.6;
-        flex-shrink: 0;
-      }
-
-      .timer-panel {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        height: 100%;
-      }
-
-      .pulse-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .pulse-dot {
-        width: 6px;
-        height: 6px;
+      .card-label::before {
+        content: "";
+        width: 4px;
+        height: 4px;
         border-radius: 50%;
-        background: #6dbf8a;
-        animation: pulseDot 2s ease infinite;
+        background: var(--gold);
+        opacity: 0.65;
+        flex-shrink: 0;
+        text-indent: 0;
       }
 
-      @keyframes pulseDot {
-        0%,
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-        50% {
-          opacity: 0.3;
-          transform: scale(0.6);
-        }
-      }
-
-      .status-label {
-        font-size: 0.58rem;
-        letter-spacing: 0.4em;
-        color: var(--text-dim);
-        text-transform: uppercase;
-      }
-
-      .timer {
-        font-size: 5.5rem;
-        font-weight: 100;
-        letter-spacing: 0.04em;
-        color: var(--text);
-        line-height: 1;
-        text-shadow: 0 0 40px rgba(200, 169, 110, 0.2);
-      }
-
-      /* MIDDLE THIRD */
-      .focus-world {
-        height: 33.33vh;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .world-overlay-mid {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          to bottom,
-          rgba(10, 12, 16, 0.4) 0%,
-          transparent 20%,
-          transparent 75%,
-          rgba(10, 12, 16, 0.4) 100%
-        );
-        z-index: 2;
-      }
-
-      /* Character placeholder */
-      .character {
-        position: absolute;
-        bottom: 18%;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 3;
-        font-size: 1.8rem;
-        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.9));
-      }
-
-      /* Ground line */
-      .ground-line {
-        position: absolute;
-        bottom: 16%;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          rgba(200, 169, 110, 0.2) 20%,
-          rgba(200, 169, 110, 0.4) 50%,
-          rgba(200, 169, 110, 0.2) 80%,
-          transparent
-        );
-        z-index: 2;
-      }
-
-      /* BOTTOM THIRD */
-      .focus-bottom {
-        height: 33.33vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-        padding: 20px 24px;
-      }
-
-      /* ─── END SCREEN ─── */
-      #endScreen {
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 36px;
-        animation: fadeUp 0.8s ease forwards;
-      }
-
-      .end-glyph {
-        font-size: 2rem;
-        color: var(--accent);
-        letter-spacing: 0.3em;
-      }
-
-      .end-title {
-        text-align: center;
-      }
-
-      .end-title h2 {
-        font-size: 2.5rem;
-        font-weight: 200;
-        letter-spacing: 0.4em;
-      }
-
-      .end-title p {
-        font-size: 0.6rem;
-        letter-spacing: 0.4em;
-        color: var(--accent);
-        text-transform: uppercase;
-        margin-top: 6px;
-      }
-
-      .end-card {
-        background: var(--glass);
-        border: 1px solid var(--glass-border);
-        border-radius: 24px;
-        padding: 40px 56px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 24px;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-      }
-
-      .session-time {
-        font-size: 3.5rem;
-        font-weight: 100;
-        letter-spacing: 0.06em;
-        color: var(--text);
-      }
-
-      /* ─── BUTTONS ─── */
+      /* ── BUTTON ── */
       .btn {
-        background: rgba(255, 255, 255, 0.07);
-        border: 1px solid var(--glass-border);
-        color: var(--text);
-        padding: 14px 44px;
+        background: rgba(245, 240, 232, 0.38);
+        border: 1px solid rgba(200, 169, 110, 0.42);
+        color: var(--warm-ink);
+        padding: 15px 56px;
         font-family: "Josefin Sans", sans-serif;
-        font-size: 0.65rem;
-        letter-spacing: 0.3em;
+        font-size: 0.66rem;
+        font-weight: 300;
+        letter-spacing: 0.4em;
+        text-indent: 0.4em;
         text-transform: uppercase;
         cursor: pointer;
         border-radius: 50px;
-        transition: all 0.4s ease;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        transition:
+          border-color 0.35s ease,
+          box-shadow 0.35s ease,
+          background 0.35s ease;
         position: relative;
         overflow: hidden;
-        backdrop-filter: blur(10px);
       }
 
-      .btn::before {
+      .btn::after {
         content: "";
         position: absolute;
         inset: 0;
-        background: rgba(255, 255, 255, 0.06);
+        background: rgba(245, 240, 232, 0.22);
         opacity: 0;
-        transition: opacity 0.4s ease;
+        transition: opacity 0.35s ease;
+        border-radius: inherit;
       }
 
-      .btn:hover::before {
+      .btn:hover {
+        border-color: var(--gold);
+        background: rgba(245, 240, 232, 0.48);
+        box-shadow:
+          0 0 28px rgba(200, 169, 110, 0.3),
+          0 0 70px rgba(200, 169, 110, 0.1);
+      }
+
+      .btn:hover::after {
         opacity: 1;
       }
-      .btn:hover {
-        border-color: rgba(255, 255, 255, 0.3);
-        box-shadow: 0 0 24px rgba(255, 255, 255, 0.05);
+
+      .btn:active {
+        transform: scale(0.98);
       }
 
-      .btn span {
-        position: relative;
-        z-index: 1;
+      /* ── FOOTER ── */
+      .screen-footer {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 0.44rem;
+        font-weight: 300;
+        letter-spacing: 0.4em;
+        text-indent: 0.4em;
+        color: rgba(245, 240, 232, 0.3);
+        text-transform: uppercase;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
       }
 
-      .btn-accent {
-        background: rgba(200, 169, 110, 0.12);
-        border-color: rgba(200, 169, 110, 0.4);
-        color: var(--accent);
+      .screen-footer .sep {
+        opacity: 0.45;
+        letter-spacing: 0;
+        text-indent: 0;
       }
 
-      .btn-accent::before {
-        background: rgba(200, 169, 110, 0.08);
-      }
-      .btn-accent:hover {
-        border-color: var(--accent);
-        box-shadow: 0 0 32px var(--accent-glow);
-      }
-
-      .divider {
-        width: 40px;
-        height: 1px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--accent),
-          transparent
-        );
-      }
-
-      @keyframes fadeUp {
+      /* ── ANIMATION ── */
+      @keyframes rise {
         from {
           opacity: 0;
-          transform: translateY(16px);
+          transform: translateY(22px);
         }
         to {
           opacity: 1;
@@ -450,232 +229,34 @@
     </style>
   </head>
   <body>
-    <!-- Background world (always present) -->
-    <div class="bg">
-      <div class="bg-world" id="bgWorld">
-        <div class="world-strip">
-          <img
-            src="Gemini_Generated_Image_tr0sj5tr0sj5tr0s.png"
-            alt="Sunlit Dunes"
-          />
-          <img
-            src="Gemini_Generated_Image_tr0sj5tr0sj5tr0s.png"
-            alt="Sunlit Dunes"
-          />
-        </div>
-      </div>
-      <div class="bg-overlay"></div>
-    </div>
+    <div id="startScreen">
+      <div class="wrap">
 
-    <!-- START SCREEN -->
-    <div class="scene active" id="startScreen">
-      <div class="start-title">
-        <h1>FOCUSQUEST</h1>
-        <p>Deine Fokus-Welt wartet</p>
-      </div>
-      <div class="divider"></div>
-      <div class="start-card">
-        <div class="status-label">Bereit für deine Session?</div>
-        <button class="btn btn-accent" onclick="startFocus()">
-          <span>Focus starten</span>
-        </button>
-      </div>
-    </div>
+        <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
 
-    <!-- FOCUS SCREEN -->
-    <div class="scene" id="focusScreen">
-      <!-- TOP: Timer -->
-      <div class="focus-top">
-        <div class="glass-panel">
-          <div class="panel-label">Musik</div>
-          <button class="panel-btn">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M9 18V5l12-2v13" />
-              <circle cx="6" cy="18" r="3" />
-              <circle cx="18" cy="16" r="3" />
-            </svg>
-            Playlist
-          </button>
-          <button class="panel-btn">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polyline points="17 1 21 5 17 9" />
-              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-              <polyline points="7 23 3 19 7 15" />
-              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-            </svg>
-            Shuffle
-          </button>
-          <button class="panel-btn">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="10 8 16 12 10 16 10 8" />
-            </svg>
-            Spotify
-          </button>
+        <div class="title-block">
+          <h1 class="main-title">FOCUSQUEST</h1>
+          <div class="title-rule"></div>
+          <p class="subtitle">Deine Fokus-Welt wartet</p>
         </div>
 
-        <div class="timer-panel">
-          <div class="pulse-row">
-            <div class="pulse-dot"></div>
-            <div class="status-label">Session läuft</div>
-          </div>
-          <div class="timer" id="timer">00:00:00</div>
+        <div class="card">
+          <p class="card-label">Bereit für deine Session?</p>
+          <button class="btn" onclick="startFocus()">Focus starten</button>
         </div>
 
-        <div class="glass-panel" style="align-items: flex-end">
-          <div class="panel-label">Optionen</div>
-          <button class="panel-btn">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
-              />
-              <circle cx="12" cy="12" r="2" />
-            </svg>
-            Inventar
-          </button>
-          <button class="panel-btn">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-              <path d="M4.93 4.93a10 10 0 0 0 0 14.14" />
-            </svg>
-            Einstellungen
-          </button>
-          <button class="panel-btn">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            </svg>
-            Welten
-          </button>
+        <div class="screen-footer">
+          <span>FocusQuest</span>
+          <span class="sep">·</span>
+          <span>V 0.1</span>
         </div>
-      </div>
 
-      <!-- MIDDLE: World -->
-      <div class="focus-world" id="focusWorldMid">
-        <div class="world-strip">
-          <img
-            src="Gemini_Generated_Image_tr0sj5tr0sj5tr0s.png"
-            alt="Sunlit Dunes"
-          />
-          <img
-            src="Gemini_Generated_Image_tr0sj5tr0sj5tr0s.png"
-            alt="Sunlit Dunes"
-          />
-        </div>
-        <div class="world-overlay-mid"></div>
-        <div class="ground-line"></div>
-        <div class="character">🧍</div>
-      </div>
-
-      <!-- BOTTOM: Actions -->
-      <div class="focus-bottom">
-        <button class="btn" onclick="endFocus()">
-          <span>Session beenden</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- END SCREEN -->
-    <div class="scene" id="endScreen">
-      <div class="end-glyph">✦ ✦ ✦</div>
-      <div class="end-title">
-        <h2>GUT GEMACHT</h2>
-        <p>Session abgeschlossen</p>
-      </div>
-      <div class="divider"></div>
-      <div class="end-card">
-        <div class="status-label">Du hast fokussiert für</div>
-        <div class="session-time" id="sessionTime">00:00:00</div>
-        <button class="btn btn-accent" onclick="restart()">
-          <span>Neue Session</span>
-        </button>
       </div>
     </div>
 
     <script>
-      let startTime;
-      let timerInterval;
-
       function startFocus() {
-        startTime = Date.now();
-        
-        showScene("focusScreen");
-        timerInterval = setInterval(updateTimer, 1000);
-      }
-
-      function updateTimer() {
-        const elapsed = Date.now() - startTime;
-        document.getElementById("timer").textContent = formatTime(elapsed);
-      }
-
-      function endFocus() {
-        clearInterval(timerInterval);
-        const elapsed = Date.now() - startTime;
-        document.getElementById("sessionTime").textContent =
-          formatTime(elapsed);
-        document.getElementById("bgWorld").classList.remove("visible"); showScene("endScreen");
-      }
-
-      function restart() {
-        document.getElementById("bgWorld").classList.remove("visible");
-        showScene("startScreen");
-      }
-
-      function showScene(id) {
-        document
-          .querySelectorAll(".scene")
-          .forEach((el) => el.classList.remove("active"));
-        document.getElementById(id).classList.add("active");
-      }
-
-      function formatTime(ms) {
-        const totalSeconds = Math.floor(ms / 1000);
-        const h = Math.floor(totalSeconds / 3600);
-        const m = Math.floor((totalSeconds % 3600) / 60);
-        const s = totalSeconds % 60;
-        return [h, m, s].map((v) => String(v).padStart(2, "0")).join(":");
+        console.log("startFocus() — screen wird folgen");
       }
     </script>
   </body>
